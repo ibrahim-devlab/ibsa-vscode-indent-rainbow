@@ -1,0 +1,31 @@
+name: Build VSIX
+
+on:
+  workflow_dispatch: # يتيح لك تشغيل البناء يدوياً من زر في موقع جيت هوب
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies & vsce
+        run: |
+          npm install
+          npm install -g @vscode/vsce
+
+      - name: Package VSIX
+        run: vsce package --no-git-tag-version
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: indent-rainbow-custom
+          path: '*.vsix'
